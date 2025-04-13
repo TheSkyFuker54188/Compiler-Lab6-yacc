@@ -9,6 +9,8 @@ find . -name "*.tab.c" -delete
 find . -name "*.tab.h" -delete
 find . -name "y.tab.c" -delete
 find . -name "y.tab.h" -delete
+find . -name "lex.yy.o" -delete
+find . -name "yacc.tab.o" -delete
 
 # 清理可执行文件
 find examples -name "parser" -delete
@@ -16,8 +18,11 @@ find examples -name "lexer" -delete
 
 # 清理临时输出文件
 rm -f my_output*.txt
-rm -f ast.dot
-rm -f my_ast.png
+
+# 明确移除根目录和子目录下的图形可视化文件
+rm -f ast.dot ast.png my_ast.png
+rm -f */ast.dot */ast.png */my_ast.png
+rm -f */*/ast.dot */*/ast.png */*/my_ast.png
 
 echo "清理完成！"
 

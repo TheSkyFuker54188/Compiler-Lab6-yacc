@@ -8,323 +8,322 @@ extern char* yytext;
 void yyerror(const char* s);
 int yylex(void);
 
-// 控制标记输出的变量
+// 控制输出的变量
 int print_var_decl = 0;     // 控制VarDecl打印
-int has_main = 0;           // 是否遇到了main函数
-%}%token MAINTK CONSTTK INTTK BREAKTK CONTINUETK IFTK ELSETK
+int top_level = 1;          // 是否在顶层
+%}
 
 %token MAINTK CONSTTK INTTK BREAKTK CONTINUETK IFTK ELSETK
-%token WHILETK GETINTTK PRINTFTK RETURNTK VOIDTKOD AND OR NOT
+%token WHILETK GETINTTK PRINTFTK RETURNTK VOIDTK
 %token IDENFR INTCON STRCON
-%token PLUS MINU MULT DIV MOD AND OR NOTRENT RPARENT LBRACK RBRACK LBRACE RBRACE
+%token PLUS MINU MULT DIV MOD AND OR NOT
 %token LSS LEQ GRE GEQ EQL NEQ
-%token ASSIGN SEMICN COMMA LPARENT RPARENT LBRACK RBRACK LBRACE RBRACE%%
- 语法规则和语义动作
+%token ASSIGN SEMICN COMMA LPARENT RPARENT LBRACK RBRACK LBRACE RBRACE
+
 %%
-// 语法规则和语义动作CompUnit
-cl { 
-CompUnitf("<CompUnit>\n");  // 总是输出
+// 语法规则和语义动作
+
+CompUnit
     : Decl { 
-        // 不输出CompUnit，直到遇到MainFuncDef FuncDef { 
-    }<CompUnit>\n");  // 总是输出
+        // 不输出任何内容
+    }
     | FuncDef { 
-        // 不输出CompUnit，直到遇到MainFuncDef MainFuncDef { 
-    }pUnit>\n");  // 总是输出
+        // 不输出任何内容
+    }
     | MainFuncDef { 
-        has_main = 1; CompUnit Decl { 
-        printf("<CompUnit>\n");  // 只有遇到MainFuncDef才输出nit>\n");  // 总是输出
+        printf("<CompUnit>\n");  // 这是程序结束时应输出的
     }
-    | CompUnit Decl {  CompUnit FuncDef { 
-        // 不输出CompUnit，直到遇到MainFuncDef>\n");  // 总是输出
+    | CompUnit Decl { 
+        // 不输出任何内容
     }
-    | CompUnit FuncDef {  CompUnit MainFuncDef { 
-        // 不输出CompUnit，直到遇到MainFuncDef);  // 总是输出
+    | CompUnit FuncDef { 
+        // 不输出任何内容
     }
     | CompUnit MainFuncDef { 
-        has_main = 1;
-        printf("<CompUnit>\n");  // 只有遇到MainFuncDef才输出Decl
-    }: ConstDecl SEMICN { 
+        printf("<CompUnit>\n");  // 这是程序结束时应输出的
+    }
     ;
->\n");
+
 Decl
-    : ConstDecl SEMICN {  VarDecl SEMICN { 
-        // 只在特定条件下输出Decl标记
-        if (!has_main)>\n");
-            printf("<Decl>\n");  // 重置VarDecl打印标记
+    : ConstDecl SEMICN { 
+        // 根据测试结果，完全不输出Decl标记
+        // 删除所有Decl标记输出
     }
     | VarDecl SEMICN { 
-        // 只在特定条件下输出Decl标记
-        if (!has_main)ConstDecl
-            printf("<Decl>\n");STTK INTTK IDENFR ASSIGN ConstExp { 
+        // 根据测试结果，完全不输出Decl标记
+        // 删除所有Decl标记输出
         print_var_decl = 0;  // 重置VarDecl打印标记
     }
-    ; CONSTTK INTTK IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { 
+    ;
 
 ConstDecl
-    : CONSTTK INTTK IDENFR ASSIGN ConstExp {  ConstDecl COMMA IDENFR ASSIGN ConstExp { 
+    : CONSTTK INTTK IDENFR ASSIGN ConstExp { 
         printf("<ConstDecl>\n");
     }
-    | CONSTTK INTTK IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal {  ConstDecl COMMA IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { 
+    | CONSTTK INTTK IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { 
         printf("<ConstDecl>\n");
     }
     | ConstDecl COMMA IDENFR ASSIGN ConstExp { 
         printf("<ConstDecl>\n");
-    }VarDecl
-    | ConstDecl COMMA IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { NTTK IDENFR { 
-        printf("<ConstDecl>\n");Decl标记
-    }) {
-    ;n");
+    }
+    | ConstDecl COMMA IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { 
+        printf("<ConstDecl>\n");
+    }
+    ;
 
 VarDecl
     : INTTK IDENFR { 
-        // 只在第一次输出VarDecl标记 INTTK IDENFR LBRACK ConstExp RBRACK { 
+        // 只在第一次输出VarDecl标记
         if (!print_var_decl) {
-            printf("<VarDecl>\n"); {
-            print_var_decl = 1;n");
+            printf("<VarDecl>\n");
+            print_var_decl = 1;
         }
     }
     | INTTK IDENFR LBRACK ConstExp RBRACK { 
-        // 只在第一次输出VarDecl标记  INTTK IDENFR ASSIGN InitVal { 
+        // 只在第一次输出VarDecl标记
         if (!print_var_decl) {
-            printf("<VarDecl>\n");) {
-            print_var_decl = 1;n");
+            printf("<VarDecl>\n");
+            print_var_decl = 1;
         }
     }
     | INTTK IDENFR ASSIGN InitVal { 
-        // 只在第一次输出VarDecl标记 INTTK IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { 
+        // 只在第一次输出VarDecl标记
         if (!print_var_decl) {
-            printf("<VarDecl>\n");) {
-            print_var_decl = 1;n");
+            printf("<VarDecl>\n");
+            print_var_decl = 1;
         }
     }
     | INTTK IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { 
-        // 只在第一次输出VarDecl标记 VarDecl COMMA IDENFR { 
+        // 只在第一次输出VarDecl标记
         if (!print_var_decl) {
             printf("<VarDecl>\n");
-            print_var_decl = 1; VarDecl COMMA IDENFR LBRACK ConstExp RBRACK { 
+            print_var_decl = 1;
         }
     }
-    | VarDecl COMMA IDENFR {  VarDecl COMMA IDENFR ASSIGN InitVal { 
+    | VarDecl COMMA IDENFR { 
         // 不输出额外的VarDecl标记
     }
-    | VarDecl COMMA IDENFR LBRACK ConstExp RBRACK {  VarDecl COMMA IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { 
+    | VarDecl COMMA IDENFR LBRACK ConstExp RBRACK { 
         // 不输出额外的VarDecl标记
     }
     | VarDecl COMMA IDENFR ASSIGN InitVal { 
         // 不输出额外的VarDecl标记
-    }FuncDef
-    | VarDecl COMMA IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { NTTK IDENFR LPARENT RPARENT Block { 
+    }
+    | VarDecl COMMA IDENFR LBRACK ConstExp RBRACK ASSIGN LBraceInitVal { 
         // 不输出额外的VarDecl标记
     }
-    ; VOIDTK IDENFR LPARENT RPARENT Block { 
+    ;
 
 FuncDef
-    : INTTK IDENFR LPARENT RPARENT Block {  INTTK IDENFR LPARENT FuncFParams RPARENT Block { 
+    : INTTK IDENFR LPARENT RPARENT Block { 
         printf("<FuncDef>\n");
     }
-    | VOIDTK IDENFR LPARENT RPARENT Block {  VOIDTK IDENFR LPARENT FuncFParams RPARENT Block { 
+    | VOIDTK IDENFR LPARENT RPARENT Block { 
         printf("<FuncDef>\n");
     }
     | INTTK IDENFR LPARENT FuncFParams RPARENT Block { 
         printf("<FuncDef>\n");
-    }MainFuncDef
-    | VOIDTK IDENFR LPARENT FuncFParams RPARENT Block {  MAINTK LPARENT RPARENT Block { 
+    }
+    | VOIDTK IDENFR LPARENT FuncFParams RPARENT Block { 
         printf("<FuncDef>\n");
     }
     ;
 
-MainFuncDefFuncFParams
-    : INTTK MAINTK LPARENT RPARENT Block { Param
-        printf("<MainFuncDef>\n");s COMMA FuncFParam
+MainFuncDef
+    : INTTK MAINTK LPARENT RPARENT Block { 
+        printf("<MainFuncDef>\n");
     }
     ;
-FuncFParam
-FuncFParamsK IDENFR
-    : FuncFParam LBRACK RBRACK
-    | FuncFParams COMMA FuncFParam FuncFParamArrayList
+
+FuncFParams
+    : FuncFParam
+    | FuncFParams COMMA FuncFParam
     ;
 
-FuncFParamFuncFParamArrayList
-    : INTTK IDENFRRACK
-    | INTTK IDENFR LBRACK RBRACKst LBRACK Exp RBRACK
+FuncFParam
+    : INTTK IDENFR
+    | INTTK IDENFR LBRACK RBRACK
     | INTTK IDENFR LBRACK RBRACK FuncFParamArrayList
     ;
-Block
-FuncFParamArrayList LBRACE RBRACE { 
-    : LBRACK Exp RBRACK>\n");
+
+FuncFParamArrayList
+    : LBRACK Exp RBRACK
     | FuncFParamArrayList LBRACK Exp RBRACK
-    ; LBRACE BlockItems RBRACE { 
+    ;
 
 Block
-    : LBRACE RBRACE { 
+    : LBRACE { top_level = 0; } RBRACE { 
         printf("<Block>\n");
-    }BlockItems
-    | LBRACE BlockItems RBRACE { kItem
-        printf("<Block>\n");s BlockItem
+        top_level = 1; // 恢复顶层标记
+    }
+    | LBRACE { top_level = 0; } BlockItems RBRACE { 
+        printf("<Block>\n");
+        top_level = 1; // 恢复顶层标记
     }
     ;
-BlockItem
-BlockItemsl
+
+BlockItems
     : BlockItem
     | BlockItems BlockItem
     ;
-Stmt
-BlockItem: LVal ASSIGN Exp SEMICN { 
+
+BlockItem
     : Decl
     | Stmt
-    ; SEMICN { 
-"<Stmt>\n");
+    ;
+
 Stmt
-    : LVal ASSIGN Exp SEMICN {  Exp SEMICN { 
-        printf("<Stmt>\n");mt>\n");
-    }
-    | SEMICN {  Block { 
-        printf("<Stmt>\n");("<Stmt>\n");
-    }
-    | Exp SEMICN {  IFTK LPARENT Cond RPARENT Stmt { 
+    : LVal ASSIGN Exp SEMICN { 
         printf("<Stmt>\n");
     }
-    | Block {  IFTK LPARENT Cond RPARENT Stmt ELSETK Stmt { 
+    | SEMICN { 
         printf("<Stmt>\n");
     }
-    | IFTK LPARENT Cond RPARENT Stmt {  WHILETK LPARENT Cond RPARENT Stmt { 
+    | Exp SEMICN { 
         printf("<Stmt>\n");
     }
-    | IFTK LPARENT Cond RPARENT Stmt ELSETK Stmt {  BREAKTK SEMICN { 
-        printf("<Stmt>\n");n");
-    }
-    | WHILETK LPARENT Cond RPARENT Stmt {  CONTINUETK SEMICN { 
-        printf("<Stmt>\n");;
-    }
-    | BREAKTK SEMICN {  RETURNTK SEMICN { 
-        printf("<Stmt>\n");");
-    }
-    | CONTINUETK SEMICN {  RETURNTK Exp SEMICN { 
+    | Block { 
         printf("<Stmt>\n");
     }
-    | RETURNTK SEMICN {  PRINTFTK LPARENT STRCON PrintfParams RPARENT SEMICN { 
+    | IFTK LPARENT Cond RPARENT Stmt { 
         printf("<Stmt>\n");
     }
-    | RETURNTK Exp SEMICN {  PRINTFTK LPARENT STRCON RPARENT SEMICN { 
+    | IFTK LPARENT Cond RPARENT Stmt ELSETK Stmt { 
         printf("<Stmt>\n");
     }
-    | PRINTFTK LPARENT STRCON PrintfParams RPARENT SEMICN {  LVal ASSIGN GETINTTK LPARENT RPARENT SEMICN { 
+    | WHILETK LPARENT Cond RPARENT Stmt { 
+        printf("<Stmt>\n");
+    }
+    | BREAKTK SEMICN { 
+        printf("<Stmt>\n");
+    }
+    | CONTINUETK SEMICN { 
+        printf("<Stmt>\n");
+    }
+    | RETURNTK SEMICN { 
+        printf("<Stmt>\n");
+    }
+    | RETURNTK Exp SEMICN { 
+        printf("<Stmt>\n");
+    }
+    | PRINTFTK LPARENT STRCON PrintfParams RPARENT SEMICN { 
         printf("<Stmt>\n");
     }
     | PRINTFTK LPARENT STRCON RPARENT SEMICN { 
         printf("<Stmt>\n");
-    }PrintfParams
-    | LVal ASSIGN GETINTTK LPARENT RPARENT SEMICN { Exp
-        printf("<Stmt>\n");ams COMMA Exp
+    }
+    | LVal ASSIGN GETINTTK LPARENT RPARENT SEMICN { 
+        printf("<Stmt>\n");
     }
     ;
-LVal
-PrintfParams: IDENFR
-    : COMMA Exp LValArrayList
+
+PrintfParams
+    : COMMA Exp
     | PrintfParams COMMA Exp
     ;
-LValArrayList
-LValExp RBRACK
-    : IDENFRACK Exp RBRACK
+
+LVal
+    : IDENFR
     | IDENFR LValArrayList
     ;
-Exp
-LValArrayList : AddExp
+
+LValArrayList
     : LBRACK Exp RBRACK
     | LValArrayList LBRACK Exp RBRACK
-    ;Cond
-: LOrExp
+    ;
+
 Exp
     : AddExp
-    ;ConstExp
-dExp
+    ;
+
 Cond
     : LOrExp
-    ;LOrExp
-LAndExp
-ConstExpOR LAndExp
+    ;
+
+ConstExp
     : AddExp
     ;
-LAndExp
-LOrExpqExp
-    : LAndExpxp AND EqExp
+
+LOrExp
+    : LAndExp
     | LOrExp OR LAndExp
     ;
-EqExp
-LAndExp RelExp
-    : EqExpEQL RelExp
+
+LAndExp
+    : EqExp
     | LAndExp AND EqExp
     ;
 
-EqExpRelExp
-    : RelExpAddExp
-    | EqExp EQL RelExp LSS AddExp
+EqExp
+    : RelExp
+    | EqExp EQL RelExp
     | EqExp NEQ RelExp
     ;
 
 RelExp
     : AddExp
-    | RelExp LSS AddExpAddExp
-    | RelExp LEQ AddExpMulExp
-    | RelExp GRE AddExp PLUS MulExp
+    | RelExp LSS AddExp
+    | RelExp LEQ AddExp
+    | RelExp GRE AddExp
     | RelExp GEQ AddExp
     ;
 
-AddExpMulExp
-    : MulExpUnaryExp
-    | AddExp PLUS MulExpULT UnaryExp
+AddExp
+    : MulExp
+    | AddExp PLUS MulExp
     | AddExp MINU MulExp
     ;
 
 MulExp
-    : UnaryExpUnaryExp
-    | MulExp MULT UnaryExpimaryExp
-    | MulExp DIV UnaryExpExp
+    : UnaryExp
+    | MulExp MULT UnaryExp
+    | MulExp DIV UnaryExp
     | MulExp MOD UnaryExp
     ;
-NT RPARENT
-UnaryExprams RPARENT
+
+UnaryExp
     : PrimaryExp
     | PLUS UnaryExp
-    | MINU UnaryExpFuncRParams
+    | MINU UnaryExp
     | NOT UnaryExp
-    | IDENFR LPARENT RPARENTcRParams COMMA Exp
+    | IDENFR LPARENT RPARENT
     | IDENFR LPARENT FuncRParams RPARENT
     ;
-PrimaryExp
-FuncRParamsENT Exp RPARENT
+
+FuncRParams
     : Exp
-    | FuncRParams COMMA Exper
+    | FuncRParams COMMA Exp
     ;
 
-PrimaryExpNumber
-    : LPARENT Exp RPARENTINTCON
+PrimaryExp
+    : LPARENT Exp RPARENT
     | LVal
     | Number
-    ;InitVal
-xp
-Number
-    : INTCON
-    ;LBraceInitVal
-RBRACE
-InitVallList RBRACE
-    : Exp
-    ;
-InitValList
-LBraceInitValal
-    : LBRACE RBRACEList COMMA InitVal
-    | LBRACE InitValList RBRACE
-    ;
-%%
-InitValList
-    : InitValvoid yyerror(const char* s) {
-    | InitValList COMMA InitVals\n", s);
     ;
 
-%%int main() {
-yparse();
+Number
+    : INTCON
+    ;
+
+InitVal
+    : Exp
+    ;
+
+LBraceInitVal
+    : LBRACE RBRACE
+    | LBRACE InitValList RBRACE
+    ;
+
+InitValList
+    : InitVal
+    | InitValList COMMA InitVal
+    ;
+
+%%
+
 void yyerror(const char* s) {
-    fprintf(stderr, "Error: %s\n", s);}
+    fprintf(stderr, "Error: %s\n", s);
+}
 
 int main() {
     return yyparse();
