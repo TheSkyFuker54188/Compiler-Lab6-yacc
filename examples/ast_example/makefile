@@ -3,10 +3,10 @@ CFLAGS = -std=c++17 -Wall -g -Wno-register
 
 all: parser
 
-parser: yacc.tab.o lex.yy.o main.cpp
+parser: yacc.tab.o lex.yy.o main.cpp ast.h
 	$(CC) $(CFLAGS) -o $@ yacc.tab.o lex.yy.o main.cpp
 
-yacc.tab.c yacc.tab.h: yacc.y
+yacc.tab.c yacc.tab.h: yacc.y ast.h
 	bison -d -o yacc.tab.c yacc.y
 
 lex.yy.c: lex.l yacc.tab.h

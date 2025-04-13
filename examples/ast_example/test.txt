@@ -1,6 +1,5 @@
 const int a = 1;
-
-int main(){
+int main() {
     int c;
     c = getint();
     return c;

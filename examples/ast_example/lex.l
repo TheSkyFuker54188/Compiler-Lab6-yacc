@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ast.h"
 #include "yacc.tab.h"
 
 char* my_strdup(const char* s) {
@@ -42,7 +43,7 @@ IDENFR [A-Za-z_][A-Za-z0-9_]*
 ">="                { return GEQ; }
 "=="                { return EQL; }
 "!="                { return NEQ; }
-"="                 { return ASSIGN; }
+"="                 { return ASSIGN; }  /* 确保"="被正确识别 */
 ";"                 { return SEMICN; }
 ","                 { return COMMA; }
 "("                 { return LPARENT; }
@@ -64,4 +65,5 @@ IDENFR [A-Za-z_][A-Za-z0-9_]*
 [ \t\r]             { }
 "//".*              { }
 
-.                   { printf("ERROR: Unrecognized character: %s\n", yytext); }
+.                   { printf("Unknown character: %s\n", yytext); }
+%%

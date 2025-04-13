@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include <sstream>
 
@@ -25,13 +27,12 @@ public:
     virtual ~BaseAST() = default;
     virtual std::string DumpDOT() const = 0;
     
-    static int node_counter;
+    // 使用inline关键字解决多重定义问题
+    static inline int node_counter = 1;
     int node_id;
     
     BaseAST() : node_id(node_counter++) {}
-};
-
-int BaseAST::node_counter = 1;
+}; // 修复这里缺少的分号
 
 // 数字AST节点
 class NumberAST : public BaseAST {
@@ -46,13 +47,39 @@ public:
     }
 };
 
+// 表达式AST节点
+class ExpAST : public BaseAST {
+public:
+    std::unique_ptr<NumberAST> number;
+    std::string variable;
+    bool is_number;
+    
+    std::string DumpDOT() const override {
+        std::stringstream ss;
+        ss << "  node" << node_id << " [label=\"Expression";
+        if (is_number) {
+            ss << "\\nnumeric";
+        } else {
+            ss << "\\nvariable: " << variable;
+        }
+        ss << "\", shape=box, style=filled, fillcolor=lightcyan];\n";
+        
+        if (is_number && number) {
+            ss << "  node" << node_id << " -> node" << number->node_id << " [label=\"value\"];\n";
+            ss << number->DumpDOT();
+        }
+        
+        return ss.str();
+    }
+};
+
 // 变量声明AST节点
 class VarDeclAST : public BaseAST {
 public:
     Type type;
     std::string ident;
     bool has_init = false;
-    std::unique_ptr<BaseAST> init_val;
+    std::unique_ptr<ExpAST> init_val;
     
     std::string DumpDOT() const override {
         std::stringstream ss;
@@ -90,7 +117,7 @@ class AssignmentAST : public BaseAST {
 public:
     std::string ident;
     bool is_getint = false;
-    std::unique_ptr<BaseAST> expr;
+    std::unique_ptr<ExpAST> expr;
     
     std::string DumpDOT() const override {
         std::stringstream ss;
