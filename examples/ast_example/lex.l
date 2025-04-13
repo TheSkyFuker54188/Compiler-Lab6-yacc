@@ -65,4 +65,3 @@ IDENFR [A-Za-z_][A-Za-z0-9_]*
 "//".*              { }
 
 .                   { printf("ERROR: Unrecognized character: %s\n", yytext); }
-%%

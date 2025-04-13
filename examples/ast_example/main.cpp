@@ -3,45 +3,44 @@
 #include "ast.h"
 
 extern int yyparse();
-int yydebug = 0;
+extern std::unique_ptr<CompUnitAST> root;
 
-int main()
-{
-    // 尝试解析
+int main() {
+    // 解析输入
     int result = yyparse();
-
-    // 即使解析失败也生成一个基本的AST图像
-    std::ofstream dotfile("ast.dot");
-    if (dotfile.is_open())
-    {
-        dotfile << "digraph AST {\n";
-
-        // 如果解析失败，生成一个简单的错误节点
-        if (result != 0)
-        {
-            std::cerr << "Parsing failed with error code: " << result << std::endl;
-            dotfile << "  node1 [label=\"Parsing Error\", shape=box, style=filled, fillcolor=red];\n";
-        }
-        else
-        {
-            // 正常解析成功时的节点
-            dotfile << "  node1 [label=\"Root\", shape=box, style=filled, fillcolor=lightblue];\n";
-            dotfile << "  node2 [label=\"CompUnit\", shape=box, style=filled, fillcolor=lightgreen];\n";
-            dotfile << "  node1 -> node2;\n";
-        }
-
-        dotfile << "}\n";
-        dotfile.close();
-
+    if (result != 0) {
+        std::cerr << "Parsing failed with error code: " << result << std::endl;
+        
+        // 即使解析失败也生成一个简单的图像
+        std::ofstream dot_file("ast.dot");
+        dot_file << "digraph AST {\n";
+        dot_file << "  node1 [label=\"Parsing Error\", shape=box, style=filled, fillcolor=red];\n";
+        dot_file << "}\n";
+        dot_file.close();
+        
         std::cout << "DOT graph saved to ast.dot" << std::endl;
         std::cout << "To generate a visual graph, run:" << std::endl;
         std::cout << "  dot -Tpng ast.dot -o ast.png" << std::endl;
-
-        return result;
-    }
-    else
-    {
-        std::cerr << "Failed to create DOT file" << std::endl;
+        
         return 1;
     }
+    
+    // 生成DOT文件
+    if (root) {
+        std::ofstream dot_file("ast.dot");
+        dot_file << "digraph AST {\n";
+        dot_file << "  node [fontname=\"Arial\"];\n";
+        dot_file << root->DumpDOT();
+        dot_file << "}\n";
+        dot_file.close();
+        
+        std::cout << "DOT graph saved to ast.dot" << std::endl;
+        std::cout << "To generate a visual graph, run:" << std::endl;
+        std::cout << "  dot -Tpng ast.dot -o ast.png" << std::endl;
+    } else {
+        std::cerr << "Failed to create AST root" << std::endl;
+        return 1;
+    }
+    
+    return 0;
 }

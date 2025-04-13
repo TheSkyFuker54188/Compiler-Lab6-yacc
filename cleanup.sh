@@ -20,9 +20,9 @@ find examples -name "lexer" -delete
 rm -f my_output*.txt
 
 # 明确移除根目录和子目录下的图形可视化文件
-rm -f ast.dot ast.png my_ast.png
-rm -f */ast.dot */ast.png */my_ast.png
-rm -f */*/ast.dot */*/ast.png */*/my_ast.png
+rm -f ast.dot my_ast.png
+rm -f */ast.dot */my_ast.png
+rm -f */*/ast.dot */*/my_ast.png
 
 echo "清理完成！"
 

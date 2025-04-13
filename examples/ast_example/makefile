@@ -3,9 +3,8 @@ CFLAGS = -std=c++17 -Wall -g -Wno-register
 
 all: parser
 
-# 使用正确的命名约定
 parser: yacc.tab.o lex.yy.o main.cpp
-	$(CC) $(CFLAGS) -o $@ lex.yy.o yacc.tab.o main.cpp
+	$(CC) $(CFLAGS) -o $@ yacc.tab.o lex.yy.o main.cpp
 
 yacc.tab.c yacc.tab.h: yacc.y
 	bison -d -o yacc.tab.c yacc.y
@@ -13,5 +12,11 @@ yacc.tab.c yacc.tab.h: yacc.y
 lex.yy.c: lex.l yacc.tab.h
 	flex -o lex.yy.c lex.l
 
+yacc.tab.o: yacc.tab.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+lex.yy.o: lex.yy.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
 clean:
-	rm -f parser lex.yy.c yacc.tab.c yacc.tab.h *.dot *.png *.o
+	rm -f parser *.o *.tab.c *.tab.h lex.yy.c *.dot *.png
