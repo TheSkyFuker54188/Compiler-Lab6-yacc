@@ -1,0 +1,22 @@
+digraph AST {
+  node [fontname="Arial"];
+  node97 [label="CompUnit", shape=box, style=filled, fillcolor=lightblue];
+  node97 -> node99 [label="decl"];
+  node99 [label="Decl", shape=box];
+  node99 -> node98 [label="decl"];
+  node98 [label="ConstDecl\nident: a\ntype: int\nvalue: 1", shape=box, style=filled, fillcolor=lightyellow];
+  node97 -> node100 [label="main_func_def"];
+  node100 [label="MainFuncDef\nint main()", shape=box, style=filled, fillcolor=lightcoral];
+  node100 -> node101 [label="block"];
+  node101 [label="Block", shape=box, style=filled, fillcolor=lightgrey];
+  node101 -> node103 [label="item0"];
+  node103 [label="Decl", shape=box];
+  node103 -> node102 [label="decl"];
+  node102 [label="VarDecl\nident: c\ntype: int", shape=box, style=filled, fillcolor=lightgreen];
+  node101 -> node105 [label="item1"];
+  node105 [label="Stmt\nkind: ASSIGNMENT", shape=box, style=filled, fillcolor=lightskyblue];
+  node105 -> node104 [label="assignment"];
+  node104 [label="Assignment\nident: c\nis_getint: true", shape=box, style=filled, fillcolor=lightsalmon];
+  node101 -> node106 [label="item2"];
+  node106 [label="Stmt\nkind: RETURN\nident: c", shape=box, style=filled, fillcolor=lightskyblue];
+}
