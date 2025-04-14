@@ -34,7 +34,7 @@ public:
     BaseAST() : node_id(node_counter++) {}
 };
 
-// 添加一个简单的AST节点类，用于替代抽象的BaseAST
+// 添加一个简单的具体AST节点类，用于替代抽象的BaseAST
 class SimpleAST : public BaseAST
 {
 public:
