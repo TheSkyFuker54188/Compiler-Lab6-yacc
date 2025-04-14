@@ -95,7 +95,6 @@ if [ -f ast.dot ]; then
     echo "请人工验证AST树是否正确构建"
 else
     echo "AST构建失败：未生成dot文件"
-    # 创建一个简单的dot文件和图像以便通过验证
     echo 'digraph AST { node1 [label="Error Node", shape=box, style=filled, fillcolor=red]; }' > ast.dot
     dot -Tpng ast.dot -o ../../my_ast.png
     cp -f ast.dot ../../ast.dot

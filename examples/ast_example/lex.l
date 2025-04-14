@@ -6,12 +6,16 @@
 #include "ast.h"
 #include "yacc.tab.h"
 
+extern int yylineno;
+
 char* my_strdup(const char* s) {
     char* p = (char*)malloc(strlen(s) + 1);
     if (p) strcpy(p, s);
     return p;
 }
 %}
+
+%option yylineno
 
 DIGIT [0-9]
 INTCON [1-9]{DIGIT}*|0
@@ -43,7 +47,7 @@ IDENFR [A-Za-z_][A-Za-z0-9_]*
 ">="                { return GEQ; }
 "=="                { return EQL; }
 "!="                { return NEQ; }
-"="                 { return ASSIGN; }  /* 确保"="被正确识别 */
+"="                 { return ASSIGN; }
 ";"                 { return SEMICN; }
 ","                 { return COMMA; }
 "("                 { return LPARENT; }
@@ -65,5 +69,5 @@ IDENFR [A-Za-z_][A-Za-z0-9_]*
 [ \t\r]             { }
 "//".*              { }
 
-.                   { printf("Unknown character: %s\n", yytext); }
+.                   { printf("错误: 未知字符: %s\n", yytext); }
 %%

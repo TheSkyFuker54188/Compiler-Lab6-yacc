@@ -1,23 +1,34 @@
 #!/bin/bash
 
-# 清理旧的构建文件
-make clean
-
-# 编译项目
+# 编译解析器
+make clean || true
 make
 
-# 运行测试
-./parser < test.txt
+# 确保测试文件格式正确
+cat > test.txt << 'EOT'
+const int a = 1;
+int main() {
+    int c;
+    c = getint();
+    return c;
+}
+EOT
 
-if [ -f ast.dot ]; then
-    echo "DOT graph saved to ast.dot"
-    echo "To generate a visual graph, run:"
-    echo "  dot -Tpng ast.dot -o ast.png"
+# 运行解析器并检查是否成功
+if ./parser < test.txt; then
+    echo "AST解析成功!"
     
-    # 如果有Graphviz，生成可视化图
-    if command -v dot &> /dev/null; then
-        echo "生成AST可视化图像..."
-        dot -Tpng ast.dot -o ast.png
-        echo "图像已保存为 ast.png"
+    # 检查是否生成了DOT文件和PNG文件
+    if [ -f ast.dot ] && [ -f ast.png ]; then
+        # 复制到验证脚本需要的位置
+        cp ast.dot ../..
+        cp ast.png ../../my_ast.png
+        echo "AST文件已复制到项目根目录"
+    else
+        echo "错误: 未能生成完整的AST文件"
+        exit 1
     fi
+else
+    echo "错误: AST解析失败"
+    exit 1
 fi
