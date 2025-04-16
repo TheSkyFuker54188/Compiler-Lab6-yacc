@@ -116,3 +116,12 @@ fi
 
 # 修改这行以正确反映AST构建状态
 echo "AST构建是否生成图像: $(if [ -f my_ast.png ]; then echo '是 (已生成my_ast.png)'; else echo '否'; fi)"
+
+# 清理多余的文件
+if [ -f "examples/ast_example/ast.png" ]; then
+    rm examples/ast_example/ast.png
+fi
+
+if [ -f "examples/ast_example/ast.dot" ]; then
+    rm examples/ast_example/ast.dot
+fi

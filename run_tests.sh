@@ -43,6 +43,7 @@ echo "AST测试:"
 if [ -f ast.dot ] && [ -f ast.png ]; then
     echo "AST文件已生成"
     cp ast.png ../../my_ast.png
+    cp ast.dot ../../ast.dot
     # 由于AST生成可能有微小差异，这里不做严格比较
     echo "请查看 my_ast.png 检查AST是否正确"
 else
@@ -51,3 +52,12 @@ fi
 cd ../..
 
 echo -e "\n===== 所有测试运行完毕 ====="
+
+# 清理多余的文件
+if [ -f "examples/ast_example/ast.png" ]; then
+    rm examples/ast_example/ast.png
+fi
+
+if [ -f "examples/ast_example/ast.dot" ]; then
+    rm examples/ast_example/ast.dot
+fi
